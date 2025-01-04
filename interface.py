@@ -62,7 +62,10 @@ class Interface(QWidget):
         self.setWindowTitle("Maya_USD_Export")
 
         # default export path
-        self.file_output_path = os.getcwd()
+        if os.environ["TWELVEFOLD_ROOT"]:
+            self.file_output_path = os.environ["TWELVEFOLD_ROOT"]
+        else:
+            self.file_output_path = os.getcwd()
         self.initUI()
 
         # set sizing hinting
