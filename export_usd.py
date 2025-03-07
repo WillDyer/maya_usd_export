@@ -49,6 +49,7 @@ class ExportAnim():
             self.set_usd_type(group_name, self.usd_type)
             self.set_usd_type(root_prim, self.root_type)
 
+            print(character["filtered_children"])
             for child in character["filtered_children"]:
                 child = f"{group_name}|{child}"
                 cmds.select(child, add=True)
@@ -58,10 +59,10 @@ class ExportAnim():
                 root_prim = root_prim.replace(f"{character['namespace']}:", "")
             
             self.output = os.path.normpath(self.output)
-            if not os.path.exists(self.output):
+            """if not os.path.exists(self.output):
                 print(f"\npath does not exists making directory:\n{self.output}")
-                os.makedirs(self.output)
-            export_file_path = f"{self.output}/{root_prim}"
+                os.makedirs(self.output)"""
+            export_file_path = f"{self.output}"
 
             # export file
             export_args = {
@@ -92,7 +93,7 @@ class ExportAnim():
             print(f"\nEXPORTING USD...\nUSD export args: {export_args}\n")
             cmds.mayaUSDExport(**export_args)
             cmds.select(clear=True)
-        self.MESSAGE = f"{self.MESSAGE}\nExported to: {export_file_path}.usd"
+        self.MESSAGE = f"{self.MESSAGE}\nExported to: {export_file_path}"
         cmds.confirmDialog(message=self.MESSAGE, title="Export Finished")
 
     def set_usd_type(self, item, usd_type):

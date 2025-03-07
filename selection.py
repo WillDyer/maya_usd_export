@@ -12,6 +12,7 @@ class Selection():
         self.namespaces = self.check_for_namespaces()
 
         character_dict = self.get_characters()
+        print(character_dict)
 
         for character in character_dict.values():
             self.namespace = character["namespace"]
@@ -65,11 +66,18 @@ class Selection():
             groups.append(cmds.ls("geo", long=True)[0])
         
         for grp in groups:
+            namespace_list = []
             parent = cmds.listRelatives(grp, parent=True, fullPath=True)
             if parent:
                 parent_name = parent[0]
                 if parent_name.endswith("rig"):
-                    namespace = parent_name.rpartition(":")[0]
+                    if "|" in parent_name:
+                        namespace_list = parent_name.split("|")
+                        namespace_list = [item for item in namespace_list if item]
+                    else: 
+                        namespace_list = parent_name
+                    print(namespace_list)
+                    namespace = namespace_list[0].rpartition(":")[0]
                     namespace = namespace.replace("|","")
                     if not namespace:
                         namespace = None
@@ -92,15 +100,18 @@ class Selection():
 
         if self.namespace:
             for geo in self.render_geo_whitelist:
+                print(geo)
                 new_geo = f"{self.namespace}:{geo}"
                 index = self.render_geo_whitelist.index(geo)
                 self.render_geo_whitelist[index] = new_geo
 
+        print(self.render_geo_whitelist)
         filtered_children = [
             child for child in children if child in self.render_geo_whitelist
         ]
         if len(filtered_children) == 0:
             return
+
         return (filtered_children, root_prim)
 
     def get_joint_grps(self, character):

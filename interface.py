@@ -42,6 +42,7 @@ from PySide.QtWidgets import (
     QCheckBox,
     QSpinBox,
     QAbstractSpinBox,
+    QDoubleSpinBox
 )
 
 from . import selection, export_usd, export_abc
@@ -134,10 +135,11 @@ class Interface(QWidget):
             stylesheet = file.read()
         self.setStyleSheet(stylesheet)
 
+
     def open_file_dialog(self):
-        file_path = QFileDialog.getExistingDirectory(self, "Select Directory", dir=self.file_output_path)
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save File", dir=self.file_output_path)
         if file_path:
-            self.file_path_lineedit.setText(file_path) 
+            self.file_path_lineedit.setText(file_path)
             self.file_output_path = file_path
 
 
@@ -163,7 +165,7 @@ class AnimRangeWidget(QWidget):
         self.w_frame_lower.setValue(1001)
         self.w_frame_upper.setValue(1101)
 
-        self.w_frame_step = QSpinBox()
+        self.w_frame_step = QDoubleSpinBox()
         self.w_frame_step.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.w_frame_step.setToolTip("Frame Step\nIndicates how many frames to skip for each saved geometry")
         self.w_frame_step.setValue(1)
@@ -197,7 +199,7 @@ class Export():
     def __init__(self, output=None, export_type=None, anim_type=None, start_frame=1001, end_frame=1101, step_frame=1):
         anim_configs = {
             "CFX": {
-                "geo_whitelist": ['render', 'muscle', 'bone'],
+                "geo_whitelist": ['skin', 'muscle', 'skeleton'],
                 "usd_type": "Xform",
                 "root_type": "SkelRoot",
                 "export_rig": True,
